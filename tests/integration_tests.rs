@@ -14,8 +14,8 @@ fn temp_test_dir(name: &str) -> PathBuf {
 }
 
 #[test]
-fn test_all_13_patches_exact_length_and_validity() {
-    assert_eq!(ALL_PATCHES.len(), 13);
+fn test_all_15_patches_exact_length_and_validity() {
+    assert_eq!(ALL_PATCHES.len(), 15);
     for (i, p) in ALL_PATCHES.iter().enumerate() {
         assert_eq!(p.id, i + 1, "Patch ID should match 1-based index");
         assert_eq!(
@@ -52,7 +52,7 @@ fn test_missing_signature_aborts_patching() {
     }
 
     let scan = patch::scan_binary(&buf);
-    assert_eq!(scan.len(), 13);
+    assert_eq!(scan.len(), 15);
     let patch5_scan = scan.iter().find(|s| s.patch.id == 5).unwrap();
     assert_eq!(patch5_scan.state, SignatureState::Missing);
 
@@ -112,7 +112,7 @@ fn test_idempotent_patching_and_detection() {
 
     // Apply patches
     let applied = patch::apply_patches_in_memory(&mut buf).expect("first apply must succeed");
-    assert_eq!(applied, 13);
+    assert_eq!(applied, 15);
     assert_eq!(buf.len(), orig_len, "Binary length must not change");
 
     // 2nd scan: all already patched

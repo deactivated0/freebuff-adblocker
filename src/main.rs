@@ -3,7 +3,7 @@ use std::path::{Path, PathBuf};
 use std::process::{Command, ExitCode};
 
 use freebuff_patcher::backup::BackupManager;
-use freebuff_patcher::patch::{self, PatchScanResult, SignatureState};
+use freebuff_patcher::patch::{self, PatchScanResult, SignatureState, ALL_PATCHES};
 use freebuff_patcher::process;
 use freebuff_patcher::settings;
 use freebuff_patcher::{check_elf_format, get_default_binary_path, get_installed_version};
@@ -94,7 +94,7 @@ fn print_help() {
     println!("COMMANDS:");
     println!("    --check      Inspect binary and settings without making any changes (default dry-run)");
     println!("    --apply      Safely patch binary, update settings, and back up originals");
-    println!("    --verify     Validate that all 13 patches and settings are in effect");
+    println!("    --verify     Validate that all patches and settings are in effect");
     println!("    --restore    Roll back the binary and settings from previous backups");
     println!("    --help       Print this help guide\n");
     println!("OPTIONS:");
@@ -172,7 +172,7 @@ fn cmd_check(config: &Config) -> ExitCode {
         }
     }
 
-    println!("\n[3/4] Scanning 13 Advertisement Signatures...");
+    println!("\n[3/4] Scanning {} Advertisement Signatures...", ALL_PATCHES.len());
     let data = match fs::read(&config.binary_path) {
         Ok(d) => d,
         Err(e) => {
@@ -213,7 +213,7 @@ fn cmd_check(config: &Config) -> ExitCode {
         return ExitCode::from(1);
     }
 
-    if unpatched_count == 0 && patched_count == 13 {
+    if unpatched_count == 0 && patched_count == ALL_PATCHES.len() {
         println!("[+] Status: Binary is ALREADY 100% patched!");
     } else {
         println!("[+] Status: Binary is ready for patching ({} unpatched, {} already patched).", unpatched_count, patched_count);
@@ -321,7 +321,7 @@ fn cmd_apply(config: &Config) -> ExitCode {
         let _ = backup_mgr.restore_binary();
         return ExitCode::from(1);
     }
-    println!("  [+] Verification confirmed all 13 patches are in place.");
+    println!("  [+] Verification confirmed all {} patches are in place.", ALL_PATCHES.len());
 
     println!("\n[5/5] Updating Local Settings...");
     match settings::update_settings_for_ad_removal(&config.settings_path) {
@@ -344,7 +344,7 @@ fn cmd_apply(config: &Config) -> ExitCode {
 
     println!("\n============================================================");
     println!("[+] SUCCESS: Freebuff ad patcher completed cleanly.");
-    println!("    All 13 advertisement surfaces have been neutralized.");
+    println!("    All {} advertisement surfaces have been neutralized.", ALL_PATCHES.len());
     println!("    Backups preserved at:");
     println!("      {}", backup_mgr.binary_backup_path().display());
     if backup_mgr.settings_backup_exists() {
@@ -380,7 +380,7 @@ fn cmd_verify(config: &Config) -> ExitCode {
         eprintln!("\n[-] Verification FAILED: Binary is not fully patched.");
         return ExitCode::from(1);
     }
-    println!("\n  [+] Binary verification PASSED (all 13 patches confirmed active).");
+    println!("\n  [+] Binary verification PASSED (all {} patches confirmed active).", ALL_PATCHES.len());
 
     println!("\n[2/3] Verifying Local Settings...");
     match settings::inspect_settings(&config.settings_path) {

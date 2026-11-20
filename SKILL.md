@@ -49,7 +49,7 @@ freebuff-patcher/
 ├── README.md                   # Public documentation and usage guide
 ├── SKILL.md                    # This maintenance manual for AI agents
 ├── docs/
-│   └── REVERSE_ENGINEERING.md  # Detailed technical breakdown of all 13 ad surfaces
+│   └── REVERSE_ENGINEERING.md  # Detailed technical breakdown of all 15 ad and survey surfaces
 ├── src/
 │   ├── lib.rs                  # Library entrypoint, ELF format validation, version detection
 │   ├── main.rs                 # CLI dispatch (--check, --apply, --verify, --restore, --help)
@@ -86,7 +86,7 @@ When a new Freebuff release is detected:
    ./target/release/freebuff-patcher --check
    ```
 2. **Examine Scan Output:**
-   - If all 13 signatures show `UNPATCHED`, the existing signatures are 100% compatible. Proceed with `--apply`.
+   - If all 15 signatures show `UNPATCHED`, the existing signatures are 100% compatible. Proceed with `--apply`.
    - If any signature shows `MISSING` or `AMBIGUOUS`:
      - Inspect the new binary bundle to locate the modified variable or function names for that specific ad surface.
      - Extract a unique signature with sufficient surrounding context.

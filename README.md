@@ -7,13 +7,13 @@
 [![Binary Size](https://img.shields.io/badge/release%20binary-~430%20KB-success.svg)]()
 
 > A 100% native Rust binary patcher and ad-removal utility for **Freebuff Terminal** on Linux x86_64.
-> Eliminates all 13 advertisement surfaces, suppresses outbound ad network requests, and synchronizes local preferences with zero external dependencies.
+> Eliminates all 15 advertisement and survey surfaces, suppresses outbound ad network requests, and synchronizes local preferences with zero external dependencies.
 
 ---
 
 ## Overview
 
-Freebuff Terminal incorporates promotional banners, modal splash dialogs, statusline partner links, sponsored task proposals, and ad-related network telemetry. 
+Freebuff Terminal incorporates promotional banners, modal splash dialogs, statusline partner links, sponsored task proposals, developer profile surveys ("quick questions"), and ad-related network telemetry. 
 
 `freebuff-adblocker` is a lightweight, zero-dependency Rust CLI utility engineered to safely and reversibly disable all advertisement functionality within the local Freebuff standalone executable (`~/.config/manicode/freebuff`) and user configuration (`~/.config/manicode/settings.json`).
 
@@ -30,7 +30,7 @@ Freebuff Terminal incorporates promotional banners, modal splash dialogs, status
 
 ## Neutralized Advertisement Surfaces
 
-`freebuff-adblocker` comprehensively disables all 13 promotional and telemetry surfaces:
+`freebuff-adblocker` comprehensively disables all 15 promotional and telemetry surfaces:
 
 | # | Surface | Scope | Neutralization Effect |
 |---|---|---|---|
@@ -47,6 +47,8 @@ Freebuff Terminal incorporates promotional banners, modal splash dialogs, status
 | **11** | Sponsored Surveys | Questionnaire | Bypasses and drops interactive sponsored survey prompts |
 | **12** | Slash Recommendations | Autocomplete | Removes injected partner promotions while preserving slash commands |
 | **13** | Sponsored Task Docks | Workflow Dock | Classifies sponsored proposals as false to prevent dock takeovers |
+| **14** | Developer Surveys | Profile Store | Suppresses developer question builder ("Who pays for your dev tools?") |
+| **15** | Survey Box Container | UI Component | Replaces questionnaire presentation box with null renderer |
 
 For full architectural details and technical analysis, see the [Reverse Engineering Documentation](docs/REVERSE_ENGINEERING.md).
 
@@ -97,19 +99,19 @@ freebuff-patcher [OPTIONS] [COMMAND]
 ### Commands
 
 #### 1. Dry-Run Inspection (`--check`)
-Inspects the executable format, checks running processes, scans for all 13 signatures, and verifies configuration files without modifying anything:
+Inspects the executable format, checks running processes, scans for all 15 signatures, and verifies configuration files without modifying anything:
 ```bash
 ./target/release/freebuff-patcher --check
 ```
 
 #### 2. Apply Patches (`--apply`)
-Backs up original files, applies all 13 byte replacements in memory, atomically replaces the binary, updates settings, and executes terminal smoke tests:
+Backs up original files, applies all 15 byte replacements in memory, atomically replaces the binary, updates settings, and executes terminal smoke tests:
 ```bash
 ./target/release/freebuff-patcher --apply
 ```
 
 #### 3. Verify Active Patches (`--verify`)
-Validates that all 13 patches and settings modifications are currently in effect:
+Validates that all 15 patches and settings modifications are currently in effect:
 ```bash
 ./target/release/freebuff-patcher --verify
 ```

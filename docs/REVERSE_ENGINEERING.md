@@ -21,7 +21,7 @@ Bun single-file executables combine native machine code with an embedded bundle 
 
 ## 2. Identified Advertisement Surfaces
 
-Analytical inspection of the bundled code identified 13 discrete surfaces where promotional content, partner deals, or ad-serving network telemetry were integrated.
+Analytical inspection of the bundled code identified 15 discrete surfaces where promotional content, partner deals, or ad-serving network telemetry were integrated.
 
 ### Surface Breakdown
 
@@ -90,6 +90,16 @@ Analytical inspection of the bundled code identified 13 discrete surfaces where 
     - **Function:** Categorizes partner task items for presentation in the workflow dock.
     - **Patch Effect:** Evaluates false for sponsored proposals.
 
+14. **Developer Profile Surveys (`MA$`):**
+    - **Component:** Developer profile questionnaire builder (`profile-survey-machine.ts`).
+    - **Function:** Builds multi-step developer questionnaires (such as "Who pays for your dev tools?").
+    - **Patch Effect:** Returns null immediately, preventing developer survey object instantiation and blocking state transition to asking mode.
+
+15. **Survey Box UI Component (`_1$`):**
+    - **Component:** Survey box presentation container (`profile-survey-box.tsx`).
+    - **Function:** Renders the survey questionnaire box with choice options and step indicators in the terminal layout.
+    - **Patch Effect:** Evaluates to a null component (`()=>null`), preventing visual rendering of any survey containers.
+
 ---
 
 ## 3. Local Settings Synchronization
@@ -109,4 +119,4 @@ All unrelated user settings, configuration options, themes, and identifiers are 
 - **Pre-Modification Backup:** Stores byte-exact backups (`freebuff.bak` and `settings.json.bak`) prior to making changes. Clean backups are never overwritten by subsequent runs.
 - **In-Memory Modification:** Validates all signatures, computes replacements, and checks buffer length before writing to disk.
 - **Atomic Replacement:** Writes the new executable to a temporary file, sets execution permissions (`0755`), and replaces the original via an atomic rename operation.
-- **Automated Rollback:** Reads back and verifies all 13 signatures post-write; automatically restores original files if any verification check fails.
+- **Automated Rollback:** Reads back and verifies all 15 signatures post-write; automatically restores original files if any verification check fails.

@@ -16,7 +16,7 @@ pub struct Patch {
     pub replacement: &'static [u8],
 }
 
-pub const ALL_PATCHES: [Patch; 13] = [
+pub const ALL_PATCHES: [Patch; 15] = [
     // Patch 01: uJ (Freebuff adsEnabled bypass)
     Patch {
         id: 1,
@@ -133,6 +133,24 @@ pub const ALL_PATCHES: [Patch; 13] = [
         description: "Sponsored proposal block identifier BJ returns false",
         original: b"function BJ(H){return H.type===\"sponsored-proposal\"}",
         replacement: b"function BJ(H){return!1;}/*_______________________*/",
+    },
+    // Patch 14: MA$ (Developer profile survey questions builder block)
+    Patch {
+        id: 14,
+        name: "MA$_developer_survey",
+        surface: "Developer Surveys",
+        description: "Developer profile survey builder MA$ returns null immediately",
+        original: b"function MA$(H,A){if(!H.show||H.questions.length===0)return null;",
+        replacement: b"function MA$(H,A){return null;/*_______________________________*/",
+    },
+    // Patch 15: _1$ (Survey box UI component block)
+    Patch {
+        id: 15,
+        name: "_1$_survey_box_component",
+        surface: "Survey UI Component",
+        description: "Survey box UI component _1$ returns null immediately",
+        original: b"_1$=({width:H})=>{let A=YU((L)=>L.survey);if(!YU((L)=>L.eligible)||!A||A.status!==\"asking\")return null;return Z(tiL,{state:A,width:H})};",
+        replacement: b"_1$=()=>null/*_______________________________________________________________________________________________________________________*/;",
     },
 ];
 
@@ -259,8 +277,8 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_all_13_patches_lengths_match() {
-        assert_eq!(ALL_PATCHES.len(), 13);
+    fn test_all_15_patches_lengths_match() {
+        assert_eq!(ALL_PATCHES.len(), 15);
         for patch in &ALL_PATCHES {
             assert_eq!(
                 patch.original.len(),
@@ -290,7 +308,7 @@ mod tests {
         }
 
         let applied = apply_patches_in_memory(&mut buf).expect("apply must succeed");
-        assert_eq!(applied, 13);
+        assert_eq!(applied, 15);
         assert_eq!(buf.len(), orig_len);
 
         let scan_after = scan_binary(&buf);
